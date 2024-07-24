@@ -2,7 +2,7 @@
 
 import { UserContext } from '@/contexts/UserContext'
 import { useEffect, useState } from 'react'
-import { User } from '@/flip-api/types'
+import { User } from '@/types'
 import { supabase } from '@/utils'
 import { AuthChangeEvent, Session } from '@supabase/supabase-js'
 
@@ -25,21 +25,20 @@ export default function LayoutState({
           .single()
         setUser({ ...userMeta, ...currentUser })
       } else setUser(null)
+      setIsUserLoading(false)
     }
 
     const getUser = async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession()
-      await extractUserFromSession(session)
-      setIsUserLoading(false)
+      extractUserFromSession(session)
     }
     getUser()
 
     supabase.auth.onAuthStateChange(
       (_event: AuthChangeEvent, session: Session | null) => {
         extractUserFromSession(session)
-        setIsUserLoading(false)
       }
     )
   }, [])

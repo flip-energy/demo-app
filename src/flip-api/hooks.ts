@@ -19,12 +19,13 @@ function useFlip<T>(
   ...args: any[]
 ) {
   const [data, setData] = useState<T | null>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isFetchingResults, setIsFetchnigResults] = useState<boolean>(false) // Used to debounce requests.
+  const [isLoading, setIsLoading] = useState<boolean>(true) // Used to provide state to the UI.
   const [errorMsg, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (data === null && !isLoading && typeof fn === 'function') {
-      setIsLoading(true)
+    if (data === null && !isFetchingResults && typeof fn === 'function') {
+      setIsFetchnigResults(true)
       fn.apply(flip, args)
         .then((data) => {
           setData(data)
@@ -34,10 +35,11 @@ function useFlip<T>(
           setError(error.message)
         })
         .finally(() => {
+          setIsFetchnigResults(false)
           setIsLoading(false)
         })
     }
-  }, [data, isLoading, fn, args])
+  }, [data, isFetchingResults, fn, args])
 
   return { data, setData, isLoading, error: errorMsg }
 }
@@ -102,12 +104,14 @@ export const useFlipEvent = (
   id: string
 ): ReturnType & {
   event: Event | null
+  setEvent: (data: Event | null) => void
 } => {
-  const { data, error, isLoading } = useFlip<Event>(flip.getEvent, id)
+  const { data, error, isLoading, setData } = useFlip<Event>(flip.getEvent, id)
   return {
     event: data,
     isError: !!error,
     isLoading,
+    setEvent: setData,
   }
 }
 

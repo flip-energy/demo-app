@@ -24,26 +24,33 @@ const FormSchema = z.object({
 const EventForm = ({
   event,
   defaultReserve,
+  setEvent,
 }: {
   event: Event
   defaultReserve: number | null
+  setEvent: (event: Event | null) => void
 }) => {
   const [open, setOpen] = useState<boolean>(false)
+
+  const currentReserve =
+    event!.device_settings![0]!.backup_reserve_percentage || defaultReserve || 0
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       is_participating: event!.is_participating,
-      reserve_percentage: [
-        event!.device_settings![0]!.backup_reserve_percentage ||
-          defaultReserve ||
-          0,
-      ],
+      reserve_percentage: [currentReserve],
     },
   })
 
+  const shouldWarn =
+    (form.getFieldState('is_participating').isDirty === true &&
+      form.getValues('is_participating') === false) ||
+    (form.getFieldState('reserve_percentage').isDirty === true &&
+      form.getValues('reserve_percentage')[0] < currentReserve)
+
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    const resp = await flip.updateEvent(event.id, {
+    const updatedEvent = await flip.updateEvent(event.id, {
       is_participating: data.is_participating,
       device_settings: event.device_settings.map((device) => ({
         device_id: device.device_id,
@@ -51,6 +58,7 @@ const EventForm = ({
       })),
     })
     setOpen(false)
+    setEvent(updatedEvent)
     form.reset(data)
   }
 
@@ -109,8 +117,17 @@ const EventForm = ({
         />
         {form.formState.isDirty && (
           <>
-            <Button onClick={() => setOpen(true)} type="button">
-              Save
+            <Button
+              onClick={() =>
+                shouldWarn ? setOpen(true) : form.handleSubmit(onSubmit)()
+              }
+              type="button"
+            >
+              {form.formState.isSubmitting ? (
+                <Spinner size={23} color="#fff" />
+              ) : (
+                'Save'
+              )}
             </Button>
             <Button
               onClick={handleRevertChanges}
@@ -130,7 +147,7 @@ const EventForm = ({
           onCancel={handleRevertChanges}
           confirmLabel={
             form.formState.isSubmitting ? (
-              <Spinner size={23} />
+              <Spinner size={23} color="#fff" />
             ) : (
               "Yes, I'm sure"
             )

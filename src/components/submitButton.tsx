@@ -1,10 +1,10 @@
-import Spinner from "@/components/spinner";
-import { Button } from "@/components/ui/button";
+import Spinner from '@/components/spinner'
+import { Button } from '@/components/ui/button'
 
-type SubmitButtonProps = React.ComponentPropsWithoutRef<"button"> & {
-  children?: React.ReactNode;
-  isSubmitting?: boolean;
-};
+type SubmitButtonProps = React.ComponentPropsWithoutRef<'button'> & {
+  children?: React.ReactNode
+  isSubmitting?: boolean
+}
 
 const SubmitButton: React.FC<SubmitButtonProps> = ({
   children,
@@ -12,8 +12,8 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
   ...props
 }: SubmitButtonProps) => (
   <Button type="submit" disabled={isSubmitting} {...props}>
-    {isSubmitting ? <Spinner size={23} /> : children || "Continue"}
+    {isSubmitting ? <Spinner size={23} color="#fff" /> : children || 'Continue'}
   </Button>
-);
+)
 
-export default SubmitButton;
+export default SubmitButton

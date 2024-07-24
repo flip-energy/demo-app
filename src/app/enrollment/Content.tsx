@@ -74,7 +74,9 @@ const EnrollmentContent = ({ enrollment, program }: PropsType) => {
         description="Are you sure you want to leave the program?"
         onConfirm={handleUnenroll}
         onCancel={() => setOpen(false)}
-        confirmLabel={isSubmitting ? <Spinner size={23} /> : "Yes, I'm sure"}
+        confirmLabel={
+          isSubmitting ? <Spinner size={23} color="#fff" /> : "Yes, I'm sure"
+        }
         cancelLabel="No, cancel"
       />
     </>

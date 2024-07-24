@@ -2,7 +2,7 @@
 
 import { useContext, useEffect } from 'react'
 import { UserContext } from '@/contexts/UserContext'
-import { User } from '@/flip-api/types'
+import { User } from '@/types'
 import { useRouter } from 'next/navigation'
 
 type RequireProps = {

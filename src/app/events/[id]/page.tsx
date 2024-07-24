@@ -61,7 +61,7 @@ const Status = ({
 
 const EventPage: React.FC<{ params: { id: string } }> = ({ params }) => {
   const { id } = params
-  const { event, isLoading: isEventLoading } = useFlipEvent(id)
+  const { event, isLoading: isEventLoading, setEvent } = useFlipEvent(id)
   const { device, isLoading: isDeviceLoading } = useFlipDevice(
     event?.device_settings?.[0].device_id
   )
@@ -120,7 +120,11 @@ const EventPage: React.FC<{ params: { id: string } }> = ({ params }) => {
       </div>
       {event &&
         (event.ends_at === null || new Date(event.ends_at) > new Date()) && (
-          <EventForm event={event} defaultReserve={defaultReserve} />
+          <EventForm
+            event={event}
+            defaultReserve={defaultReserve}
+            setEvent={setEvent}
+          />
         )}
     </>
   )

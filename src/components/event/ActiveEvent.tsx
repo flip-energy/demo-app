@@ -6,7 +6,7 @@ import {
   UtilityPoleIcon,
   ZapIcon,
 } from 'lucide-react'
-import TimeLeft from '../../app/TimeLeft'
+import TimeLeft from '../TimeLeft'
 import useBatteryStatus from '@/hooks/useBatteryStatus'
 import { capitalizeString } from '@/utils'
 
