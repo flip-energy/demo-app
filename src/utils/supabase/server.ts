@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { Database } from '@/flip-api/types/supabase'
+import { Database } from '@/types/supabase'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 export function createServerSupabase(

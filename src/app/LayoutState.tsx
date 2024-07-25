@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { User } from '@/types'
 import { supabase } from '@/utils'
 import { AuthChangeEvent, Session } from '@supabase/supabase-js'
+import { Toaster } from '@/components/ui/toaster'
 
 export default function LayoutState({
   children,
@@ -48,6 +49,7 @@ export default function LayoutState({
       value={{ user, setUser, isUserLoading, setIsUserLoading }}
     >
       {children}
+      <Toaster />
     </UserContext.Provider>
   )
 }

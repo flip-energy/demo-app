@@ -317,6 +317,7 @@ export interface Event {
   ends_at: string | null
   id: UUID
   is_participating: boolean
+  site_id: string
   program_id: UUID
   /**
    * Use this to build a schedule for the event to show the end-user. Not enough information
@@ -397,3 +398,15 @@ export enum EventStatus {
   COMPLETED = 'COMPLETED',
   UPCOMING = 'UPCOMING',
 }
+
+export enum WebhookType {
+  EVENT_CREATED = 'event.created',
+  ENROLLMENT_UPDATED = 'enrollment.updated',
+}
+
+export type Webhook =
+  | {
+      event_type: WebhookType.EVENT_CREATED
+      event_object: Event
+    }
+  | { event_type: WebhookType.ENROLLMENT_UPDATED; event_object: Enrollment }

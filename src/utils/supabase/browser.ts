@@ -1,5 +1,5 @@
 import { SupabaseClient } from '@supabase/supabase-js'
-import { Database } from '@/flip-api/types/supabase'
+import { Database } from '@/types/supabase'
 import { createBrowserClient } from '@supabase/ssr'
 
 const createClient = (): SupabaseClient<Database> => {

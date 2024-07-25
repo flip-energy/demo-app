@@ -21,10 +21,15 @@ function useFlip<T>(
   const [data, setData] = useState<T | null>(null)
   const [isFetchingResults, setIsFetchnigResults] = useState<boolean>(false) // Used to debounce requests.
   const [isLoading, setIsLoading] = useState<boolean>(true) // Used to provide state to the UI.
+  const [forceRefresh, setForceRefresh] = useState<boolean>(false) // Used to force a refresh of the data.
   const [errorMsg, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (data === null && !isFetchingResults && typeof fn === 'function') {
+    if (
+      (data === null || forceRefresh) &&
+      !isFetchingResults &&
+      typeof fn === 'function'
+    ) {
       setIsFetchnigResults(true)
       fn.apply(flip, args)
         .then((data) => {
@@ -35,13 +40,23 @@ function useFlip<T>(
           setError(error.message)
         })
         .finally(() => {
+          setForceRefresh(false)
           setIsFetchnigResults(false)
           setIsLoading(false)
         })
     }
-  }, [data, isFetchingResults, fn, args])
+  }, [data, isFetchingResults, forceRefresh, fn, args])
 
-  return { data, setData, isLoading, error: errorMsg }
+  const setDataWithNull = (data: T | null) => {
+    if (data === null) setIsLoading(true)
+    setData(data)
+  }
+
+  const refresh = () => {
+    setForceRefresh(true)
+  }
+
+  return { data, setData: setDataWithNull, refresh, isLoading, error: errorMsg }
 }
 
 interface ReturnType {
@@ -91,12 +106,18 @@ export const useFlipEnrollments = (): ReturnType & {
 
 export const useFlipEvents = (): ReturnType & {
   events: Event[] | null
+  setEvents: (data: Event[] | null) => void
+  refreshEvents: () => void
 } => {
-  const { data, error, isLoading } = useFlip<Event[]>(flip.getEvents)
+  const { data, error, isLoading, setData, refresh } = useFlip<Event[]>(
+    flip.getEvents
+  )
   return {
     events: data,
     isError: !!error,
     isLoading,
+    setEvents: setData,
+    refreshEvents: refresh,
   }
 }
 
